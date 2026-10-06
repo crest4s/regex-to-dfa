@@ -1,82 +1,43 @@
-# Evaluador de expresiones regulares mediante autómatas finitos
+# regex-to-dfa
 
-Este proyecto implementa un flujo completo para transformar expresiones regulares en autómatas finitos deterministas minimizados y evaluar cadenas de entrada. Es una práctica pensada para la asignatura **Procesadores del Lenguaje**.
+From regular expressions to minimal deterministic finite automata. For each of four regular expressions, the NFA, the equivalent DFA and the minimised DFA were built in [JFLAP](https://www.jflap.org/), and the minimal DFA is then simulated in Python with a transition table to accept or reject input strings.
 
-## Características principales
+Lab project (PL1) for the *Procesadores del Lenguaje* (Language Processors) course at the University of Alcalá (UAH), 2025–26 academic year.
 
-- Construcción de AFND a partir de una expresión regular (construcción de Thompson).
-- Conversión de AFND a AFD (algoritmo de subconjuntos).
-- Minimización del AFD resultante (Hopcroft).
-- Visualización del AFD como matriz de transiciones.
-- Ejecución de cadenas de prueba sobre el autómata minimizado.
+## Regular expressions
 
-## Ejecución
+| Part | Language | Regular expression |
+|------|----------|--------------------|
+| A | Identifiers | `[a-zA-Z][a-zA-Z0-9]*` |
+| B | Strings over {a, b} with an even number of `a` | `b*(ab*ab*)*` |
+| C | Integer or floating-point numbers | `[0-9]+(\.[0-9]+)?` |
+| D | Addition/subtraction expressions of identifiers and numbers | `((l+L)(l+L+d)* + d+(.d+)?)([+-]((l+L)(l+L+d)* + d+(.d+)?))*` (l = lowercase letter, L = uppercase letter, d = digit) |
+
+## Structure
+
+```
+PL1/
+├── Versión corta/
+│   ├── Apartado A/   # NFA.jff, DFA.jff, MINIMIZED DFA.jff
+│   ├── Apartado B/
+│   ├── Apartado C/
+│   └── Apartado D/   # automata for the operand and operator schemes and the full expression
+└── code/
+    └── main.py       # DFA simulator with named states (q0, q1, ...) for parts A–D
+```
+
+## Usage
+
+The `.jff` files open in JFLAP (not included; download it from <https://www.jflap.org/>).
+
+The simulator needs only Python 3:
 
 ```bash
-python main.py
+python3 PL1/code/main.py
 ```
 
-El programa muestra un menú con las expresiones regulares de ejemplo. Tras seleccionar una opción se imprimen:
+Choose a part (`A`, `B`, `C` or `D`), type a string and the program prints whether the minimal DFA accepts it (`Cadena válida`) or not (`Cadena no válida`). Type `exit` to quit.
 
-1. La matriz de transiciones del AFD minimizado.
-2. Resultados de los casos de prueba incluidos para cada patrón.
-3. Un modo interactivo para evaluar cadenas introducidas por teclado (deje la entrada vacía para terminar).
+## License
 
-## Expresiones regulares de ejemplo
-
-| Nombre | Expresión regular |
-| --- | --- |
-| Identificadores | `^[A-Za-z][A-Za-z0-9]*$` |
-| Cadenas sobre `{a,b}` con número par de `a` | `^b*(ab*ab*)*$` |
-| Números flotantes | `^[0-9]+(\.[0-9]+)?$` |
-| Expresiones de suma/resta | `^[A-Za-z_][A-Za-z0-9_]*(\s*[+\-]\s*([A-Za-z_][A-Za-z0-9_]*|[0-9]+(\.[0-9]+)?))*$` |
-
-## Ejemplo de salida
-
-```
-Sistema de evaluación de ER mediante autómatas finitos
-Seleccione una expresión regular de ejemplo:
-
-  2. Cadenas con número par de a -> ^b*(ab*ab*)*$
-
-Opción: 2
-
-Seleccionado: Cadenas con número par de a
-
-Matriz de transiciones:
-Estado  a   b
-S0      S1  S0
-S1      S0  S1
-
-Casos de prueba:
-  '': ACEPTADA
-  'b': ACEPTADA
-  'abba': ACEPTADA
-  'aba': ACEPTADA
-
-Ingrese cadenas a evaluar (línea vacía para terminar):
-> abba
-  Resultado: ACEPTADA
-> aba
-  Resultado: ACEPTADA
->
-```
-
-## Módulo `automata`
-
-El módulo `automata.py` expone funciones y clases reutilizables:
-
-- `regex_to_nfa(pattern)`
-- `nfa_to_dfa(nfa)`
-- `minimize_dfa(dfa)`
-- `generate_transition_matrix(dfa)`
-- `build_minimized_dfa(pattern)`
-- `evaluate_pattern(pattern, candidates)`
-
-Las clases `State`, `Transition`, `NFA` y `DFA` encapsulan el comportamiento de cada estructura.
-
-## Requisitos
-
-- Python 3.9 o superior.
-- No requiere dependencias externas.
-
+[MIT](LICENSE)
