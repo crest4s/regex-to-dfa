@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.jar
+jflapPreferences.xml
+*.mov
+.DS_Store
+.idea/
+.vscode/
